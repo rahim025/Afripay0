@@ -8,6 +8,9 @@ const userSchema = new mongoose.Schema(
     pays: { type: String, required: true },
     devise: { type: String, required: true, default: 'XOF' },
     solde: { type: Number, default: 0 },
+    verifie: { type: Boolean, default: false },
+    codeVerification: { type: String, select: false },
+    codeVerificationExpire: { type: Date, select: false },
   },
   { timestamps: true }
 );
