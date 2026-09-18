@@ -1,6 +1,5 @@
 // Adresse du backend AfriPay.
 // En local (serveur + navigateur sur le même ordinateur) : http://localhost:5000
-// Une fois le backend déployé (Render, etc.) : remplace par ton URL, ex :
-// window.AFRIPAY_API_BASE = 'https://afripay-api.onrender.com';
+// Backend déployé sur Render :
 
-window.AFRIPAY_API_BASE = 'http://localhost:5000';
+window.AFRIPAY_API_BASE = 'https://afripay0.onrender.com';
