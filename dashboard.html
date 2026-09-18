@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tableau de bord — AfriPay</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0F1A2B;
+    --bg-panel:#152238;
+    --gold:#E3A23C;
+    --coral:#E2572B;
+    --green:#4FA97A;
+    --cream:#F3EEE2;
+    --cream-dim:rgba(243,238,226,0.62);
+    --line:rgba(243,238,226,0.14);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--cream);
+    font-family:'Space Grotesk', sans-serif;
+    line-height:1.5;
+  }
+  h1,h2,h3{font-family:'Fraunces', serif; font-weight:500; margin:0;}
+  a{color:inherit;}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 28px;}
+
+  nav{
+    position:sticky; top:0; z-index:10;
+    background:rgba(15,26,43,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    padding-top:18px; padding-bottom:18px;
+  }
+  .logo{font-family:'Fraunces', serif; font-size:1.35rem;}
+  .logo span{color:var(--gold);}
+  .logo a{text-decoration:none; color:inherit;}
+  nav .right{display:flex; align-items:center; gap:18px; font-size:0.92rem;}
+  #nav-nom{color:var(--cream-dim);}
+  #logout-btn{
+    background:none; border:1px solid var(--line); color:var(--cream);
+    padding:8px 14px; border-radius:3px; font-family:'Space Grotesk', sans-serif;
+    font-size:0.88rem; cursor:pointer;
+  }
+  #logout-btn:hover{border-color:var(--cream-dim);}
+
+  main{padding:48px 0 96px;}
+
+  .greeting{margin-bottom:36px;}
+  .greeting .eyebrow{color:var(--gold); font-size:0.85rem; margin-bottom:8px;}
+  .greeting h1{font-size:clamp(1.6rem, 3vw, 2.2rem);}
+
+  .top-grid{
+    display:grid;
+    grid-template-columns:1.2fr 1fr;
+    gap:24px;
+    margin-bottom:24px;
+  }
+
+  .card{
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:28px;
+  }
+
+  .balance-card .label{color:var(--cream-dim); font-size:0.88rem;}
+  .balance-card .amount{
+    font-family:'Fraunces', serif; font-size:2.6rem; margin-top:10px;
+  }
+  .balance-card .amount .devise{font-size:1.1rem; color:var(--cream-dim); margin-left:6px;}
+  .balance-card .actions{display:flex; gap:12px; margin-top:24px; flex-wrap:wrap;}
+  .btn{
+    display:inline-block; padding:12px 20px; border-radius:3px; font-size:0.92rem;
+    text-decoration:none; border:1px solid transparent; cursor:pointer;
+    font-family:'Space Grotesk', sans-serif;
+  }
+  .btn-primary{background:var(--gold); color:#1B1206; font-weight:600;}
+  .btn-primary:hover{background:#eeb35c;}
+  .btn-ghost{border-color:var(--line); color:var(--cream); background:none;}
+  .btn-ghost:hover{border-color:var(--cream-dim);}
+
+  .profile-card h3{font-size:1rem; margin-bottom:16px;}
+  .profile-row{
+    display:flex; justify-content:space-between; padding:9px 0;
+    border-top:1px solid var(--line); font-size:0.92rem;
+  }
+  .profile-row:first-of-type{border-top:none;}
+  .profile-row .k{color:var(--cream-dim);}
+
+  .stats-grid{
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:24px; margin-bottom:24px;
+  }
+  .stat-card .label{color:var(--cream-dim); font-size:0.85rem;}
+  .stat-card .value{font-family:'Fraunces', serif; font-size:1.7rem; margin-top:8px;}
+  .stat-card.envoye .value{color:var(--coral);}
+  .stat-card.recu .value{color:var(--green);}
+
+  .history-card h3{font-size:1.1rem; margin-bottom:20px;}
+  table{width:100%; border-collapse:collapse; font-size:0.9rem;}
+  thead th{
+    text-align:left; color:var(--cream-dim); font-weight:500; font-size:0.8rem;
+    padding-bottom:12px; border-bottom:1px solid var(--line);
+  }
+  tbody td{padding:14px 0; border-bottom:1px solid var(--line);}
+  tbody tr:last-child td{border-bottom:none;}
+  .sens-badge{
+    display:inline-block; padding:3px 10px; border-radius:12px; font-size:0.78rem;
+  }
+  .sens-badge.envoye{background:rgba(226,87,43,0.16); color:var(--coral);}
+  .sens-badge.recu{background:rgba(79,169,122,0.16); color:var(--green);}
+  .statut-badge{font-size:0.8rem; color:var(--cream-dim);}
+  .empty-state{
+    text-align:center; padding:48px 0; color:var(--cream-dim); font-size:0.94rem;
+  }
+
+  .modal-backdrop{
+    display:none; position:fixed; inset:0; background:rgba(15,26,43,0.7);
+    z-index:100; align-items:center; justify-content:center;
+  }
+  .modal-backdrop.show{display:flex;}
+  .modal{
+    background:var(--bg-panel); border:1px solid var(--line); border-radius:6px;
+    padding:28px; width:100%; max-width:420px;
+  }
+  .modal h3{font-size:1.1rem; margin-bottom:20px;}
+  .modal .field{margin-bottom:16px;}
+  .modal .field label{display:block; font-size:0.82rem; color:var(--cream-dim); margin-bottom:8px;}
+  .modal .field input, .modal .field select{
+    width:100%; background:var(--bg); border:1px solid var(--line); color:var(--cream);
+    padding:11px 14px; border-radius:3px; font-family:'Space Grotesk', sans-serif; font-size:0.96rem;
+  }
+  .modal .actions{display:flex; gap:12px; margin-top:22px;}
+  .modal .actions .btn{flex:1; text-align:center;}
+  .modal .feedback{font-size:0.85rem; margin-top:14px; display:none;}
+  .modal .feedback.error{color:var(--coral); display:block;}
+  .modal .feedback.success{color:var(--green); display:block;}
+
+  .loading-state, .error-state{
+    text-align:center; padding:96px 0; color:var(--cream-dim);
+  }
+  .error-state{display:none;}
+
+  @media (max-width: 860px){
+    .top-grid{grid-template-columns:1fr;}
+    .stats-grid{grid-template-columns:1fr;}
+    nav .right span{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="logo"><a href="index.html">Afri<span>Pay</span></a></div>
+    <div class="right">
+      <span id="nav-nom"></span>
+      <button id="logout-btn">Se déconnecter</button>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <div class="wrap">
+
+    <div class="loading-state" id="loading-state">Chargement de votre tableau de bord…</div>
+
+    <div class="error-state" id="error-state">
+      <p id="error-message">Impossible de charger votre compte.</p>
+      <a href="connexion.html" class="btn btn-primary" style="margin-top:16px;">Se reconnecter</a>
+    </div>
+
+    <div id="dashboard-content" style="display:none;">
+      <div class="greeting">
+        <div class="eyebrow">Tableau de bord</div>
+        <h1 id="greeting-title">Bonjour</h1>
+      </div>
+
+      <div class="top-grid">
+        <div class="card balance-card">
+          <div class="label">Solde disponible</div>
+          <div class="amount"><span id="solde">0</span><span class="devise" id="solde-devise"></span></div>
+          <div class="actions">
+            <button class="btn btn-primary" id="open-send">Envoyer de l'argent</button>
+            <button class="btn btn-ghost" id="open-deposit">Ajouter des fonds</button>
+          </div>
+        </div>
+        <div class="card profile-card">
+          <h3>Votre profil</h3>
+          <div class="profile-row"><span class="k">Nom</span><span id="profil-nom"></span></div>
+          <div class="profile-row"><span class="k">Email</span><span id="profil-email"></span></div>
+          <div class="profile-row"><span class="k">Pays</span><span id="profil-pays"></span></div>
+          <div class="profile-row"><span class="k">Devise</span><span id="profil-devise"></span></div>
+          <div class="profile-row"><span class="k">Membre depuis</span><span id="profil-date"></span></div>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="card stat-card">
+          <div class="label">Transferts effectués</div>
+          <div class="value" id="stat-nombre">0</div>
+        </div>
+        <div class="card stat-card envoye">
+          <div class="label">Total envoyé</div>
+          <div class="value" id="stat-envoye">0</div>
+        </div>
+        <div class="card stat-card recu">
+          <div class="label">Total reçu</div>
+          <div class="value" id="stat-recu">0</div>
+        </div>
+      </div>
+
+      <div class="card history-card">
+        <h3>Historique des transactions</h3>
+        <div id="history-table-wrap">
+          <table>
+            <thead>
+              <tr><th>Sens</th><th>Montant envoyé</th><th>Montant reçu</th><th>Statut</th><th>Date</th></tr>
+            </thead>
+            <tbody id="history-body"></tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="history-empty" style="display:none;">
+          Aucune transaction pour l'instant. Envoyez votre premier transfert pour le voir apparaître ici.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Modale : envoyer de l'argent -->
+<div class="modal-backdrop" id="send-modal">
+  <div class="modal">
+    <h3>Envoyer de l'argent</h3>
+    <form id="send-form">
+      <div class="field">
+        <label for="send-email">Email du destinataire</label>
+        <input type="email" id="send-email" required>
+      </div>
+      <div class="field">
+        <label for="send-montant">Montant à envoyer</label>
+        <input type="number" id="send-montant" min="1" step="0.01" required>
+      </div>
+      <div class="field">
+        <label for="send-devise-cible">Devise reçue par le destinataire</label>
+        <select id="send-devise-cible" required>
+          <option value="XOF">Franc CFA (XOF)</option>
+          <option value="NGN">Naira (NGN)</option>
+          <option value="GHS">Cedi (GHS)</option>
+          <option value="KES">Shilling (KES)</option>
+        </select>
+      </div>
+      <div class="feedback" id="send-feedback"></div>
+      <div class="actions">
+        <button type="button" class="btn btn-ghost" data-close="send-modal">Annuler</button>
+        <button type="submit" class="btn btn-primary" id="send-submit">Envoyer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modale : ajouter des fonds -->
+<div class="modal-backdrop" id="deposit-modal">
+  <div class="modal">
+    <h3>Ajouter des fonds</h3>
+    <p style="color:var(--cream-dim); font-size:0.85rem; margin-bottom:18px;">
+      Aucune passerelle de paiement réelle n'est branchée : ce dépôt sert uniquement à la démonstration.
+    </p>
+    <form id="deposit-form">
+      <div class="field">
+        <label for="deposit-montant">Montant à ajouter</label>
+        <input type="number" id="deposit-montant" min="1" step="0.01" required>
+      </div>
+      <div class="feedback" id="deposit-feedback"></div>
+      <div class="actions">
+        <button type="button" class="btn btn-ghost" data-close="deposit-modal">Annuler</button>
+        <button type="submit" class="btn btn-primary" id="deposit-submit">Ajouter</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const API_BASE = window.AFRIPAY_API_BASE || 'http://localhost:5000';
+  const token = localStorage.getItem('afripay_token');
+
+  if(!token){
+    window.location.href = 'connexion.html';
+  }
+
+  function authHeaders(){
+    return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token };
+  }
+
+  function formatMontant(n){
+    return Number(n).toLocaleString('fr-FR', { maximumFractionDigits: 2 });
+  }
+  function formatDate(iso){
+    return new Date(iso).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric' });
+  }
+
+  let currentUser = null;
+
+  async function chargerDashboard(){
+    try {
+      const res = await fetch(API_BASE + '/api/users/moi', { headers: authHeaders() });
+
+      if(res.status === 401){
+        localStorage.removeItem('afripay_token');
+        localStorage.removeItem('afripay_user');
+        window.location.href = 'connexion.html';
+        return;
+      }
+
+      const data = await res.json();
+      if(!res.ok){
+        throw new Error(data.error || 'Erreur inconnue');
+      }
+
+      currentUser = data.user;
+      afficherProfil(data.user);
+      afficherStats(data.stats, data.user.devise);
+      afficherHistorique(data.transactions);
+
+      document.getElementById('loading-state').style.display = 'none';
+      document.getElementById('dashboard-content').style.display = 'block';
+    } catch (err) {
+      document.getElementById('loading-state').style.display = 'none';
+      document.getElementById('error-state').style.display = 'block';
+      document.getElementById('error-message').textContent = err.message;
+    }
+  }
+
+  function afficherProfil(user){
+    document.getElementById('nav-nom').textContent = user.nom;
+    document.getElementById('greeting-title').textContent = 'Bonjour, ' + user.nom.split(' ')[0];
+    document.getElementById('solde').textContent = formatMontant(user.solde);
+    document.getElementById('solde-devise').textContent = user.devise;
+    document.getElementById('profil-nom').textContent = user.nom;
+    document.getElementById('profil-email').textContent = user.email;
+    document.getElementById('profil-pays').textContent = user.pays;
+    document.getElementById('profil-devise').textContent = user.devise;
+    document.getElementById('profil-date').textContent = formatDate(user.createdAt);
+  }
+
+  function afficherStats(stats, devise){
+    document.getElementById('stat-nombre').textContent = stats.nombreTransactions;
+    document.getElementById('stat-envoye').textContent = formatMontant(stats.totalEnvoye) + ' ' + devise;
+    document.getElementById('stat-recu').textContent = formatMontant(stats.totalRecu) + ' ' + devise;
+  }
+
+  function afficherHistorique(transactions){
+    const body = document.getElementById('history-body');
+    const empty = document.getElementById('history-empty');
+    const wrap = document.getElementById('history-table-wrap');
+
+    if(!transactions.length){
+      wrap.style.display = 'none';
+      empty.style.display = 'block';
+      return;
+    }
+    wrap.style.display = 'block';
+    empty.style.display = 'none';
+
+    body.innerHTML = transactions.map(t => `
+      <tr>
+        <td><span class="sens-badge ${t.sens}">${t.sens === 'envoye' ? 'Envoyé' : 'Reçu'}</span></td>
+        <td>${formatMontant(t.montantEnvoye)} ${t.deviseEnvoyee}</td>
+        <td>${formatMontant(t.montantRecu)} ${t.deviseRecue}</td>
+        <td><span class="statut-badge">${t.statut}</span></td>
+        <td>${formatDate(t.date)}</td>
+      </tr>
+    `).join('');
+  }
+
+  // --- Déconnexion ---
+  document.getElementById('logout-btn').addEventListener('click', function(){
+    localStorage.removeItem('afripay_token');
+    localStorage.removeItem('afripay_user');
+    window.location.href = 'connexion.html';
+  });
+
+  // --- Modales ---
+  function openModal(id){ document.getElementById(id).classList.add('show'); }
+  function closeModal(id){ document.getElementById(id).classList.remove('show'); }
+
+  document.getElementById('open-send').addEventListener('click', () => openModal('send-modal'));
+  document.getElementById('open-deposit').addEventListener('click', () => openModal('deposit-modal'));
+  document.querySelectorAll('[data-close]').forEach(btn => {
+    btn.addEventListener('click', () => closeModal(btn.dataset.close));
+  });
+
+  // --- Envoyer de l'argent ---
+  document.getElementById('send-form').addEventListener('submit', async function(e){
+    e.preventDefault();
+    const feedback = document.getElementById('send-feedback');
+    const submitBtn = document.getElementById('send-submit');
+    feedback.className = 'feedback';
+
+    const email = document.getElementById('send-email').value.trim();
+    const montant = Number(document.getElementById('send-montant').value);
+    const deviseCible = document.getElementById('send-devise-cible').value;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Envoi…';
+
+    try {
+      const rechercheRes = await fetch(API_BASE + '/api/users/rechercher?email=' + encodeURIComponent(email), { headers: authHeaders() });
+      const rechercheData = await rechercheRes.json();
+      if(!rechercheRes.ok) throw new Error(rechercheData.error);
+
+      const transfertRes = await fetch(API_BASE + '/api/transfers', {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ destinataireId: rechercheData.user.id, montant, deviseCible }),
+      });
+      const transfertData = await transfertRes.json();
+      if(!transfertRes.ok) throw new Error(transfertData.error);
+
+      feedback.textContent = 'Transfert envoyé avec succès.';
+      feedback.className = 'feedback success';
+      setTimeout(() => { closeModal('send-modal'); document.getElementById('send-form').reset(); chargerDashboard(); }, 900);
+    } catch (err) {
+      feedback.textContent = err.message || 'Erreur lors de l\'envoi.';
+      feedback.className = 'feedback error';
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Envoyer';
+    }
+  });
+
+  // --- Ajouter des fonds (démo) ---
+  document.getElementById('deposit-form').addEventListener('submit', async function(e){
+    e.preventDefault();
+    const feedback = document.getElementById('deposit-feedback');
+    const submitBtn = document.getElementById('deposit-submit');
+    feedback.className = 'feedback';
+
+    const montant = Number(document.getElementById('deposit-montant').value);
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Ajout…';
+
+    try {
+      const res = await fetch(API_BASE + '/api/users/deposer', {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ montant }),
+      });
+      const data = await res.json();
+      if(!res.ok) throw new Error(data.error);
+
+      feedback.textContent = 'Fonds ajoutés.';
+      feedback.className = 'feedback success';
+      setTimeout(() => { closeModal('deposit-modal'); document.getElementById('deposit-form').reset(); chargerDashboard(); }, 900);
+    } catch (err) {
+      feedback.textContent = err.message || 'Erreur lors du dépôt.';
+      feedback.className = 'feedback error';
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Ajouter';
+    }
+  });
+
+  if(token) chargerDashboard();
+</script>
+
+</body>
+</html>
