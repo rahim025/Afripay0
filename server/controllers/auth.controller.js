@@ -24,7 +24,6 @@ async function inscription(req, res, next) {
     }
 
     const hash = await bcrypt.hash(motDePasse, 10);
-    const code = genererCode();
 
     const user = await User.create({
       nom,
@@ -32,17 +31,13 @@ async function inscription(req, res, next) {
       motDePasse: hash,
       pays,
       devise: devise || 'XOF',
-      verifie: false,
-      codeVerification: code,
-      codeVerificationExpire: new Date(Date.now() + 15 * 60 * 1000), // valide 15 min
+      verifie: true, // pas de service SMS/email branché : compte actif immédiatement
     });
 
-    // Pas de service SMS/email réel branché : le code est simplement loggé côté serveur.
-    console.log(`📩 Code de vérification pour ${user.email} : ${code}`);
-
+    const token = generateToken(user._id);
     res.status(201).json({
-      message: 'Compte créé. Un code de vérification a été envoyé.',
-      email: user.email,
+      token,
+      user: { id: user._id, nom: user.nom, email: user.email, pays: user.pays, devise: user.devise },
     });
   } catch (err) {
     next(err);
