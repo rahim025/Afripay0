@@ -337,13 +337,16 @@
         return;
       }
 
-      confirmText.textContent = "Bienvenue " + prenom + ". Un code de vérification a été envoyé — entrez-le sur la page suivante pour activer votre compte.";
+      localStorage.setItem('afripay_token', data.token);
+      localStorage.setItem('afripay_user', JSON.stringify(data.user));
+
+      confirmText.textContent = "Bienvenue " + prenom + ". Votre compte est prêt.";
       confirmPanel.classList.add('show');
       form.reset();
 
       setTimeout(function(){
-        window.location.href = 'verification.html?email=' + encodeURIComponent(email);
-      }, 1400);
+        window.location.href = 'dashboard.html';
+      }, 900);
     } catch (err) {
       showServerError("Impossible de contacter le serveur. Vérifiez votre connexion.");
     } finally {
