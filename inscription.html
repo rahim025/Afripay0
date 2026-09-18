@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Créer un compte — AfriPay</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0F1A2B;
+    --bg-panel:#152238;
+    --gold:#E3A23C;
+    --coral:#E2572B;
+    --cream:#F3EEE2;
+    --cream-dim:rgba(243,238,226,0.62);
+    --line:rgba(243,238,226,0.14);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--cream);
+    font-family:'Space Grotesk', sans-serif;
+    line-height:1.5;
+  }
+  h1,h2{font-family:'Fraunces', serif; font-weight:500; margin:0;}
+  a{color:inherit;}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 28px;}
+
+  nav{
+    background:rgba(15,26,43,0.88);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    padding-top:18px; padding-bottom:18px;
+  }
+  .logo{font-family:'Fraunces', serif; font-size:1.35rem;}
+  .logo span{color:var(--gold);}
+  .logo a{text-decoration:none; color:inherit;}
+  nav .links a{
+    text-decoration:none; color:var(--cream-dim); font-size:0.95rem;
+  }
+  nav .links a:hover{color:var(--cream);}
+
+  main{
+    padding:72px 0 96px;
+    display:flex;
+    justify-content:center;
+  }
+  .panel{
+    width:100%;
+    max-width:520px;
+  }
+  .panel .eyebrow{
+    color:var(--gold);
+    font-size:0.85rem;
+    margin-bottom:10px;
+  }
+  .panel h1{
+    font-size:clamp(1.7rem, 3vw, 2.1rem);
+    line-height:1.2;
+  }
+  .panel p.lede{
+    color:var(--cream-dim);
+    margin-top:14px;
+    font-size:0.98rem;
+    max-width:48ch;
+  }
+
+  form{
+    margin-top:38px;
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:32px;
+  }
+  .row{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+  .field{margin-bottom:20px;}
+  .field label{
+    display:block; font-size:0.82rem; color:var(--cream-dim); margin-bottom:8px;
+  }
+  .field input, .field select{
+    width:100%;
+    background:var(--bg);
+    border:1px solid var(--line);
+    color:var(--cream);
+    padding:12px 14px;
+    border-radius:3px;
+    font-family:'Space Grotesk', sans-serif;
+    font-size:1rem;
+  }
+  .field input:focus, .field select:focus{
+    outline:2px solid var(--gold);
+    outline-offset:1px;
+  }
+  .field .hint{
+    font-size:0.78rem; color:var(--cream-dim); margin-top:6px;
+  }
+  .field .error{
+    font-size:0.8rem; color:var(--coral); margin-top:6px; display:none;
+  }
+  .field.invalid input, .field.invalid select{border-color:var(--coral);}
+  .field.invalid .error{display:block;}
+
+  .btn-primary{
+    width:100%;
+    padding:14px;
+    background:var(--gold);
+    color:#1B1206;
+    font-weight:600;
+    border:none;
+    border-radius:3px;
+    font-size:1rem;
+    font-family:'Space Grotesk', sans-serif;
+    cursor:pointer;
+  }
+  .btn-primary:hover{background:#eeb35c;}
+
+  .fine-print{
+    margin-top:18px;
+    font-size:0.8rem;
+    color:var(--cream-dim);
+    text-align:center;
+  }
+  .fine-print a{color:var(--gold); text-decoration:none;}
+
+  .confirm{
+    display:none;
+    margin-top:38px;
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:28px;
+    background:var(--bg-panel);
+  }
+  .confirm.show{display:block;}
+  .confirm h2{font-size:1.2rem;}
+  .confirm p{color:var(--cream-dim); margin-top:10px; font-size:0.94rem;}
+
+  .demo-note{
+    margin-top:24px;
+    font-size:0.82rem;
+    color:var(--cream-dim);
+    border-left:2px solid var(--gold);
+    padding-left:14px;
+  }
+
+  @media (max-width: 560px){
+    .row{grid-template-columns:1fr;}
+    form{padding:24px;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="logo"><a href="index.html">Afri<span>Pay</span></a></div>
+    <div class="links"><a href="index.html">Retour à l'accueil</a></div>
+  </div>
+</nav>
+
+<main>
+  <div class="wrap panel">
+    <div class="eyebrow">Créer un compte</div>
+    <h1>Ouvrez votre compte AfriPay en quelques minutes.</h1>
+    <p class="lede">Renseignez vos informations pour envoyer et recevoir de l'argent partout en Afrique. Votre numéro de téléphone restera la clé de votre portefeuille.</p>
+
+    <form id="signup-form" novalidate>
+      <div class="row">
+        <div class="field" data-field="prenom">
+          <label for="prenom">Prénom</label>
+          <input type="text" id="prenom" name="prenom" required>
+          <div class="error">Merci d'indiquer votre prénom.</div>
+        </div>
+        <div class="field" data-field="nom">
+          <label for="nom">Nom</label>
+          <input type="text" id="nom" name="nom" required>
+          <div class="error">Merci d'indiquer votre nom.</div>
+        </div>
+      </div>
+
+      <div class="field" data-field="telephone">
+        <label for="telephone">Numéro de téléphone</label>
+        <input type="tel" id="telephone" name="telephone" placeholder="+229 00 00 00 00" required>
+        <div class="hint">Avec l'indicatif du pays. Il servira à vérifier votre compte par code envoyé par SMS.</div>
+        <div class="error">Merci d'entrer un numéro de téléphone valide, avec l'indicatif du pays.</div>
+      </div>
+
+      <div class="row">
+        <div class="field" data-field="pays">
+          <label for="pays">Pays</label>
+          <select id="pays" name="pays" required>
+            <option value="">Sélectionner…</option>
+            <option value="BJ">Bénin</option>
+            <option value="CI">Côte d'Ivoire</option>
+            <option value="SN">Sénégal</option>
+            <option value="NG">Nigeria</option>
+            <option value="GH">Ghana</option>
+            <option value="KE">Kenya</option>
+            <option value="CD">RD Congo</option>
+            <option value="ZA">Afrique du Sud</option>
+          </select>
+          <div class="error">Merci de choisir votre pays.</div>
+        </div>
+        <div class="field" data-field="devise">
+          <label for="devise">Devise de votre compte</label>
+          <select id="devise" name="devise" required>
+            <option value="">Sélectionner…</option>
+            <option value="XOF">Franc CFA (XOF)</option>
+            <option value="NGN">Naira (NGN)</option>
+            <option value="GHS">Cedi (GHS)</option>
+            <option value="KES">Shilling (KES)</option>
+            <option value="CDF">Franc congolais (CDF)</option>
+            <option value="ZAR">Rand (ZAR)</option>
+          </select>
+          <div class="error">Merci de choisir votre devise.</div>
+        </div>
+      </div>
+
+      <div class="field" data-field="email">
+        <label for="email">Adresse e-mail</label>
+        <input type="email" id="email" name="email" required>
+        <div class="hint">Utilisée pour les notifications et la vérification du compte, jamais pour vos identifiants.</div>
+        <div class="error">Merci d'entrer une adresse e-mail valide.</div>
+      </div>
+
+      <div class="field" data-field="pin">
+        <label for="pin">Code PIN (4 chiffres)</label>
+        <input type="password" id="pin" name="pin" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" required>
+        <div class="hint">Ce code vous servira à confirmer vos transferts.</div>
+        <div class="error">Le code PIN doit contenir exactement 4 chiffres.</div>
+      </div>
+
+      <button type="submit" class="btn-primary">Créer mon compte</button>
+
+      <div class="demo-note">
+        Ceci est une page de démonstration du site vitrine : aucun compte n'est réellement créé et aucune donnée n'est envoyée.
+      </div>
+    </form>
+
+    <div class="confirm" id="confirm-panel">
+      <h2>Compte créé (démonstration)</h2>
+      <p id="confirm-text"></p>
+    </div>
+  </div>
+</main>
+
+<script>
+  const form = document.getElementById('signup-form');
+  const confirmPanel = document.getElementById('confirm-panel');
+  const confirmText = document.getElementById('confirm-text');
+
+  function setInvalid(field, isInvalid){
+    field.classList.toggle('invalid', isInvalid);
+  }
+
+  function validPhone(value){
+    return /^\+?[0-9\s]{8,15}$/.test(value.trim());
+  }
+  function validPin(value){
+    return /^[0-9]{4}$/.test(value.trim());
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    let ok = true;
+
+    const checks = [
+      { id:'prenom', valid: v => v.trim().length > 0 },
+      { id:'nom', valid: v => v.trim().length > 0 },
+      { id:'telephone', valid: validPhone },
+      { id:'pays', valid: v => v !== '' },
+      { id:'devise', valid: v => v !== '' },
+      { id:'email', valid: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) },
+      { id:'pin', valid: validPin }
+    ];
+
+    checks.forEach(({id, valid}) => {
+      const input = document.getElementById(id);
+      const field = input.closest('.field');
+      const isValid = valid(input.value);
+      setInvalid(field, !isValid);
+      if(!isValid) ok = false;
+    });
+
+    if(!ok){
+      confirmPanel.classList.remove('show');
+      return;
+    }
+
+    const prenom = document.getElementById('prenom').value.trim();
+    const pays = document.getElementById('pays').selectedOptions[0].textContent;
+    confirmText.textContent = "Bienvenue " + prenom + ". Un code de vérification serait envoyé au numéro fourni, et votre compte serait associé à : " + pays + ".";
+    confirmPanel.classList.add('show');
+    form.reset();
+  });
+</script>
+
+</body>
+</html>
