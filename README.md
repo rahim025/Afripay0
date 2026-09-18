@@ -1,22 +1,46 @@
-# AfriPay — Site vitrine
+# AfriPay
 
-Site vitrine de présentation pour **AfriPay**, un service pensé pour envoyer et recevoir de l'argent partout en Afrique avec conversion automatique dans la monnaie du destinataire.
+Envoyer et recevoir de l'argent partout en Afrique, avec conversion automatique dans la monnaie du destinataire.
 
-## Contenu
+Projet repris de zéro avec une structure claire : site vitrine séparé de l'API backend.
 
-- `index.html` — page unique (HTML/CSS/JS), aucune dépendance à installer.
-- Comprend un simulateur de conversion de devises avec des taux fictifs, à but purement démonstratif (aucune transaction réelle).
+## Structure
 
-## Utiliser en local
+```
+afripay/
+├── client/          Site vitrine (HTML/CSS/JS, sans dépendance)
+│   ├── index.html
+│   ├── inscription.html
+│   └── icon.svg
+└── server/          API backend (Node.js/Express + MongoDB)
+    ├── server.js
+    ├── config/
+    ├── controllers/
+    ├── models/
+    ├── middleware/
+    └── routes/
+```
 
-Ouvrir simplement `index.html` dans un navigateur.
+## Démarrer le backend en local
 
-## Déployer avec GitHub Pages
+```bash
+cd server
+cp .env.example .env   # puis renseigner MONGODB_URI et JWT_SECRET
+npm install
+npm run dev
+```
 
-1. Pousser ce dépôt sur GitHub (voir plus bas).
-2. Dans les paramètres du dépôt : **Settings → Pages → Source : branche `main`, dossier `/ (root)`**.
-3. Le site sera disponible à l'adresse `https://<ton-utilisateur>.github.io/<nom-du-repo>/`.
+L'API démarre sur `http://localhost:5000`. Vérifier qu'elle tourne avec `GET /api/health`.
+
+## Démarrer le frontend en local
+
+Ouvrir simplement `client/index.html` dans un navigateur.
+
+## Déploiement
+
+- **Frontend** : GitHub Pages ou Netlify (dossier `client/`).
+- **Backend** : Render, avec une base MongoDB Atlas (variables d'environnement `MONGODB_URI` et `JWT_SECRET` à définir dans le dashboard).
 
 ## Statut
 
-Projet en construction — site vitrine uniquement, séparé du backend AfriPay (Node.js/Express).
+🟡 Squelette — routes d'authentification, profil utilisateur et transfert en place (avec taux de change fictifs), à connecter au frontend et à enrichir.
