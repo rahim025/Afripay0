@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vérifier votre compte — AfriPay</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0F1A2B;
+    --bg-panel:#152238;
+    --gold:#E3A23C;
+    --coral:#E2572B;
+    --cream:#F3EEE2;
+    --cream-dim:rgba(243,238,226,0.62);
+    --line:rgba(243,238,226,0.14);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--cream);
+    font-family:'Space Grotesk', sans-serif;
+    line-height:1.5;
+  }
+  h1,h2{font-family:'Fraunces', serif; font-weight:500; margin:0;}
+  a{color:inherit;}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 28px;}
+
+  nav{
+    background:rgba(15,26,43,0.88);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    padding-top:18px; padding-bottom:18px;
+  }
+  .logo{font-family:'Fraunces', serif; font-size:1.35rem;}
+  .logo span{color:var(--gold);}
+  .logo a{text-decoration:none; color:inherit;}
+  nav .links a{ text-decoration:none; color:var(--cream-dim); font-size:0.95rem; }
+  nav .links a:hover{color:var(--cream);}
+
+  main{ padding:72px 0 96px; display:flex; justify-content:center; }
+  .panel{ width:100%; max-width:440px; }
+  .panel .eyebrow{ color:var(--gold); font-size:0.85rem; margin-bottom:10px; }
+  .panel h1{ font-size:clamp(1.7rem, 3vw, 2.1rem); line-height:1.2; }
+  .panel p.lede{ color:var(--cream-dim); margin-top:14px; font-size:0.98rem; max-width:48ch; }
+  .panel p.lede strong{ color:var(--cream); }
+
+  form{
+    margin-top:38px;
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:32px;
+  }
+  .field{margin-bottom:22px;}
+  .field label{ display:block; font-size:0.82rem; color:var(--cream-dim); margin-bottom:8px; }
+  .field input{
+    width:100%;
+    background:var(--bg);
+    border:1px solid var(--line);
+    color:var(--cream);
+    padding:14px;
+    border-radius:3px;
+    font-family:'Space Grotesk', sans-serif;
+    font-size:1.4rem;
+    letter-spacing:0.5em;
+    text-align:center;
+  }
+  .field input:focus{ outline:2px solid var(--gold); outline-offset:1px; }
+  .field.invalid input{border-color:var(--coral);}
+  .field .error{ font-size:0.8rem; color:var(--coral); margin-top:6px; display:none; }
+  .field.invalid .error{display:block;}
+
+  .btn-primary{
+    width:100%; padding:14px; background:var(--gold); color:#1B1206;
+    font-weight:600; border:none; border-radius:3px; font-size:1rem;
+    font-family:'Space Grotesk', sans-serif; cursor:pointer;
+  }
+  .btn-primary:hover{background:#eeb35c;}
+  .btn-primary:disabled{opacity:0.6; cursor:not-allowed;}
+
+  .resend{
+    margin-top:16px; text-align:center; font-size:0.85rem; color:var(--cream-dim);
+  }
+  .resend button{
+    background:none; border:none; color:var(--gold); cursor:pointer;
+    font-family:'Space Grotesk', sans-serif; font-size:0.85rem; padding:0;
+  }
+  .resend button:disabled{ color:var(--cream-dim); cursor:not-allowed; }
+
+  .server-error{
+    display:none; margin-top:20px; font-size:0.88rem; color:var(--coral);
+    border-left:2px solid var(--coral); padding-left:14px;
+  }
+  .server-error.show{display:block;}
+  .server-note{
+    display:none; margin-top:20px; font-size:0.88rem; color:var(--gold);
+    border-left:2px solid var(--gold); padding-left:14px;
+  }
+  .server-note.show{display:block;}
+
+  .dev-hint{
+    margin-top:24px; font-size:0.78rem; color:var(--cream-dim);
+    border-left:2px solid var(--line); padding-left:14px;
+  }
+
+  @media (max-width: 560px){ form{padding:24px;} }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="logo"><a href="index.html">Afri<span>Pay</span></a></div>
+    <div class="links"><a href="index.html">Retour à l'accueil</a></div>
+  </div>
+</nav>
+
+<main>
+  <div class="wrap panel">
+    <div class="eyebrow">Vérification</div>
+    <h1>Entrez le code reçu</h1>
+    <p class="lede">Un code à 6 chiffres a été envoyé à <strong id="email-display">votre adresse</strong>. Entrez-le pour activer votre compte.</p>
+
+    <form id="verify-form" novalidate>
+      <div class="field" data-field="code">
+        <label for="code">Code de vérification</label>
+        <input type="text" id="code" name="code" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" autocomplete="one-time-code" required>
+        <div class="error">Entrez les 6 chiffres du code.</div>
+      </div>
+
+      <button type="submit" class="btn-primary" id="submit-btn">Vérifier mon compte</button>
+
+      <div class="server-error" id="server-error"></div>
+      <div class="server-note" id="server-note"></div>
+
+      <div class="resend">
+        Vous n'avez rien reçu ?
+        <button type="button" id="resend-btn">Renvoyer le code</button>
+      </div>
+
+      <div class="dev-hint">
+        Aucun service SMS/email réel n'est branché pour l'instant : le code est affiché dans les logs du serveur (console) à des fins de développement.
+      </div>
+    </form>
+  </div>
+</main>
+
+<script>
+  const API_BASE = window.AFRIPAY_API_BASE || 'http://localhost:5000';
+
+  const params = new URLSearchParams(window.location.search);
+  const email = params.get('email') || '';
+  document.getElementById('email-display').textContent = email || 'votre adresse';
+
+  const form = document.getElementById('verify-form');
+  const serverError = document.getElementById('server-error');
+  const serverNote = document.getElementById('server-note');
+  const submitBtn = document.getElementById('submit-btn');
+  const resendBtn = document.getElementById('resend-btn');
+
+  function showError(msg){
+    serverNote.classList.remove('show');
+    serverError.textContent = msg;
+    serverError.classList.add('show');
+  }
+  function showNote(msg){
+    serverError.classList.remove('show');
+    serverNote.textContent = msg;
+    serverNote.classList.add('show');
+  }
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    const codeInput = document.getElementById('code');
+    const field = codeInput.closest('.field');
+    const code = codeInput.value.trim();
+
+    const valid = /^[0-9]{6}$/.test(code);
+    field.classList.toggle('invalid', !valid);
+    if(!valid) return;
+
+    if(!email){
+      showError('Adresse e-mail manquante — retournez à la page d\'inscription.');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Vérification…';
+
+    try {
+      const res = await fetch(API_BASE + '/api/auth/verifier', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, code }),
+      });
+      const data = await res.json();
+
+      if(!res.ok){
+        showError(data.error || 'Code invalide.');
+        return;
+      }
+
+      localStorage.setItem('afripay_token', data.token);
+      localStorage.setItem('afripay_user', JSON.stringify(data.user));
+      showNote('Compte vérifié ! Redirection vers votre tableau de bord…');
+
+      setTimeout(function(){
+        window.location.href = 'dashboard.html';
+      }, 900);
+    } catch (err) {
+      showError('Impossible de contacter le serveur. Vérifiez votre connexion.');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Vérifier mon compte';
+    }
+  });
+
+  resendBtn.addEventListener('click', async function(){
+    if(!email){
+      showError('Adresse e-mail manquante — retournez à la page d\'inscription.');
+      return;
+    }
+    resendBtn.disabled = true;
+    try {
+      const res = await fetch(API_BASE + '/api/auth/renvoyer-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if(!res.ok){
+        showError(data.error || 'Impossible de renvoyer le code.');
+      } else {
+        showNote('Un nouveau code a été envoyé.');
+      }
+    } catch (err) {
+      showError('Impossible de contacter le serveur.');
+    } finally {
+      setTimeout(function(){ resendBtn.disabled = false; }, 15000);
+    }
+  });
+</script>
+
+</body>
+</html>

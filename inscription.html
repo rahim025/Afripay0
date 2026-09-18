@@ -141,13 +141,16 @@
   .confirm h2{font-size:1.2rem;}
   .confirm p{color:var(--cream-dim); margin-top:10px; font-size:0.94rem;}
 
-  .demo-note{
-    margin-top:24px;
-    font-size:0.82rem;
-    color:var(--cream-dim);
-    border-left:2px solid var(--gold);
+  .server-error{
+    display:none;
+    margin-top:20px;
+    font-size:0.88rem;
+    color:var(--coral);
+    border-left:2px solid var(--coral);
     padding-left:14px;
   }
+  .server-error.show{display:block;}
+  .btn-primary:disabled{opacity:0.6; cursor:not-allowed;}
 
   @media (max-width: 560px){
     .row{grid-template-columns:1fr;}
@@ -239,24 +242,26 @@
         <div class="error">Le code PIN doit contenir exactement 4 chiffres.</div>
       </div>
 
-      <button type="submit" class="btn-primary">Créer mon compte</button>
+      <button type="submit" class="btn-primary" id="submit-btn">Créer mon compte</button>
 
-      <div class="demo-note">
-        Ceci est une page de démonstration du site vitrine : aucun compte n'est réellement créé et aucune donnée n'est envoyée.
-      </div>
+      <div class="server-error" id="server-error"></div>
     </form>
 
     <div class="confirm" id="confirm-panel">
-      <h2>Compte créé (démonstration)</h2>
+      <h2>Compte créé</h2>
       <p id="confirm-text"></p>
     </div>
   </div>
 </main>
 
 <script>
+  const API_BASE = window.AFRIPAY_API_BASE || 'http://localhost:5000';
+
   const form = document.getElementById('signup-form');
   const confirmPanel = document.getElementById('confirm-panel');
   const confirmText = document.getElementById('confirm-text');
+  const serverError = document.getElementById('server-error');
+  const submitBtn = document.getElementById('submit-btn');
 
   function setInvalid(field, isInvalid){
     field.classList.toggle('invalid', isInvalid);
@@ -269,9 +274,15 @@
     return /^[0-9]{4}$/.test(value.trim());
   }
 
-  form.addEventListener('submit', function(e){
+  function showServerError(message){
+    serverError.textContent = message;
+    serverError.classList.add('show');
+  }
+
+  form.addEventListener('submit', async function(e){
     e.preventDefault();
     let ok = true;
+    serverError.classList.remove('show');
 
     const checks = [
       { id:'prenom', valid: v => v.trim().length > 0 },
@@ -297,10 +308,47 @@
     }
 
     const prenom = document.getElementById('prenom').value.trim();
-    const pays = document.getElementById('pays').selectedOptions[0].textContent;
-    confirmText.textContent = "Bienvenue " + prenom + ". Un code de vérification serait envoyé au numéro fourni, et votre compte serait associé à : " + pays + ".";
-    confirmPanel.classList.add('show');
-    form.reset();
+    const nomFamille = document.getElementById('nom').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const pin = document.getElementById('pin').value.trim();
+    const pays = document.getElementById('pays').value;
+    const devise = document.getElementById('devise').value;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Création en cours…';
+
+    try {
+      const res = await fetch(API_BASE + '/api/auth/inscription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nom: prenom + ' ' + nomFamille,
+          email,
+          motDePasse: pin,
+          pays,
+          devise,
+        }),
+      });
+      const data = await res.json();
+
+      if(!res.ok){
+        showServerError(data.error || "Une erreur est survenue, réessayez.");
+        return;
+      }
+
+      confirmText.textContent = "Bienvenue " + prenom + ". Un code de vérification a été envoyé — entrez-le sur la page suivante pour activer votre compte.";
+      confirmPanel.classList.add('show');
+      form.reset();
+
+      setTimeout(function(){
+        window.location.href = 'verification.html?email=' + encodeURIComponent(email);
+      }, 1400);
+    } catch (err) {
+      showServerError("Impossible de contacter le serveur. Vérifiez votre connexion.");
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Créer mon compte';
+    }
   });
 </script>
 

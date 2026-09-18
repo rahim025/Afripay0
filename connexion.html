@@ -144,13 +144,17 @@
   .confirm h2{font-size:1.2rem;}
   .confirm p{color:var(--cream-dim); margin-top:10px; font-size:0.94rem;}
 
-  .demo-note{
-    margin-top:24px;
-    font-size:0.82rem;
-    color:var(--cream-dim);
-    border-left:2px solid var(--gold);
+  .server-error{
+    display:none;
+    margin-top:20px;
+    font-size:0.88rem;
+    color:var(--coral);
+    border-left:2px solid var(--coral);
     padding-left:14px;
   }
+  .server-error.show{display:block;}
+  .server-error a{color:var(--gold);}
+  .btn-primary:disabled{opacity:0.6; cursor:not-allowed;}
 
   @media (max-width: 560px){
     form{padding:24px;}
@@ -190,15 +194,13 @@
         <a href="#">Code oublié ?</a>
       </div>
 
-      <button type="submit" class="btn-primary">Se connecter</button>
+      <button type="submit" class="btn-primary" id="submit-btn">Se connecter</button>
 
-      <div class="demo-note">
-        Ceci est une page de démonstration du site vitrine : aucune connexion réelle n'est effectuée.
-      </div>
+      <div class="server-error" id="server-error"></div>
     </form>
 
     <div class="confirm" id="confirm-panel">
-      <h2>Connexion réussie (démonstration)</h2>
+      <h2>Connexion réussie</h2>
       <p id="confirm-text"></p>
     </div>
 
@@ -209,9 +211,13 @@
 </main>
 
 <script>
+  const API_BASE = window.AFRIPAY_API_BASE || 'http://localhost:5000';
+
   const form = document.getElementById('login-form');
   const confirmPanel = document.getElementById('confirm-panel');
   const confirmText = document.getElementById('confirm-text');
+  const serverError = document.getElementById('server-error');
+  const submitBtn = document.getElementById('submit-btn');
 
   function setInvalid(field, isInvalid){
     field.classList.toggle('invalid', isInvalid);
@@ -219,10 +225,15 @@
   function validPin(value){
     return /^[0-9]{4}$/.test(value.trim());
   }
+  function showServerError(html){
+    serverError.innerHTML = html;
+    serverError.classList.add('show');
+  }
 
-  form.addEventListener('submit', function(e){
+  form.addEventListener('submit', async function(e){
     e.preventDefault();
     let ok = true;
+    serverError.classList.remove('show');
 
     const checks = [
       { id:'email', valid: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) },
@@ -243,9 +254,44 @@
     }
 
     const email = document.getElementById('email').value.trim();
-    confirmText.textContent = "Bienvenue de retour. Vous seriez maintenant connecté avec le compte : " + email + ".";
-    confirmPanel.classList.add('show');
-    form.reset();
+    const pin = document.getElementById('pin').value.trim();
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Connexion en cours…';
+
+    try {
+      const res = await fetch(API_BASE + '/api/auth/connexion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, motDePasse: pin }),
+      });
+      const data = await res.json();
+
+      if(!res.ok){
+        if(data.code === 'NON_VERIFIE'){
+          showServerError('Compte non vérifié. <a href="verification.html?email=' + encodeURIComponent(data.email || email) + '">Entrer le code de vérification</a>.');
+        } else {
+          showServerError(data.error || 'Identifiants invalides.');
+        }
+        return;
+      }
+
+      localStorage.setItem('afripay_token', data.token);
+      localStorage.setItem('afripay_user', JSON.stringify(data.user));
+
+      confirmText.textContent = "Bienvenue de retour, " + data.user.nom + ".";
+      confirmPanel.classList.add('show');
+      form.reset();
+
+      setTimeout(function(){
+        window.location.href = 'dashboard.html';
+      }, 900);
+    } catch (err) {
+      showServerError("Impossible de contacter le serveur. Vérifiez votre connexion.");
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Se connecter';
+    }
   });
 </script>
 

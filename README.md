@@ -43,4 +43,4 @@ Ouvrir simplement `client/index.html` dans un navigateur.
 
 ## Statut
 
-🟡 Squelette — routes d'authentification, profil utilisateur et transfert en place (avec taux de change fictifs), à connecter au frontend et à enrichir.
+🟡 En cours — flux complet inscription → vérification par code → connexion → tableau de bord, connecté au backend. Taux de change toujours fictifs, pas de vraie passerelle de paiement (dépôt de démonstration uniquement), pas de service SMS/email réel (le code de vérification est loggé côté serveur).
