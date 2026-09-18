@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Créer un compte — AfriPay</title>
+<title>Se connecter — AfriPay</title>
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,7 +41,6 @@
   .logo{font-family:'Fraunces', serif; font-size:1.35rem;}
   .logo span{color:var(--gold);}
   .logo a{text-decoration:none; color:inherit;}
-  nav .links{display:flex; gap:24px; align-items:center;}
   nav .links a{
     text-decoration:none; color:var(--cream-dim); font-size:0.95rem;
   }
@@ -54,7 +53,7 @@
   }
   .panel{
     width:100%;
-    max-width:520px;
+    max-width:440px;
   }
   .panel .eyebrow{
     color:var(--gold);
@@ -79,12 +78,11 @@
     border-radius:6px;
     padding:32px;
   }
-  .row{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
   .field{margin-bottom:20px;}
   .field label{
     display:block; font-size:0.82rem; color:var(--cream-dim); margin-bottom:8px;
   }
-  .field input, .field select{
+  .field input{
     width:100%;
     background:var(--bg);
     border:1px solid var(--line);
@@ -94,18 +92,23 @@
     font-family:'Space Grotesk', sans-serif;
     font-size:1rem;
   }
-  .field input:focus, .field select:focus{
+  .field input:focus{
     outline:2px solid var(--gold);
     outline-offset:1px;
-  }
-  .field .hint{
-    font-size:0.78rem; color:var(--cream-dim); margin-top:6px;
   }
   .field .error{
     font-size:0.8rem; color:var(--coral); margin-top:6px; display:none;
   }
-  .field.invalid input, .field.invalid select{border-color:var(--coral);}
+  .field.invalid input{border-color:var(--coral);}
   .field.invalid .error{display:block;}
+
+  .field-row{
+    display:flex; justify-content:space-between; align-items:center; margin-top:-8px; margin-bottom:20px;
+  }
+  .field-row a{
+    font-size:0.82rem; color:var(--gold); text-decoration:none;
+  }
+  .field-row a:hover{text-decoration:underline;}
 
   .btn-primary{
     width:100%;
@@ -150,7 +153,6 @@
   }
 
   @media (max-width: 560px){
-    .row{grid-template-columns:1fr;}
     form{padding:24px;}
   }
 </style>
@@ -160,110 +162,59 @@
 <nav>
   <div class="wrap">
     <div class="logo"><a href="index.html">Afri<span>Pay</span></a></div>
-    <div class="links">
-      <a href="connexion.html">Se connecter</a>
-      <a href="index.html">Retour à l'accueil</a>
-    </div>
+    <div class="links"><a href="index.html">Retour à l'accueil</a></div>
   </div>
 </nav>
 
 <main>
   <div class="wrap panel">
-    <div class="eyebrow">Créer un compte</div>
-    <h1>Ouvrez votre compte AfriPay en quelques minutes.</h1>
-    <p class="lede">Renseignez vos informations pour envoyer et recevoir de l'argent partout en Afrique. Votre numéro de téléphone restera la clé de votre portefeuille.</p>
+    <div class="eyebrow">Se connecter</div>
+    <h1>Content de vous revoir.</h1>
+    <p class="lede">Connectez-vous pour suivre vos transferts et gérer votre compte AfriPay.</p>
 
-    <form id="signup-form" novalidate>
-      <div class="row">
-        <div class="field" data-field="prenom">
-          <label for="prenom">Prénom</label>
-          <input type="text" id="prenom" name="prenom" required>
-          <div class="error">Merci d'indiquer votre prénom.</div>
-        </div>
-        <div class="field" data-field="nom">
-          <label for="nom">Nom</label>
-          <input type="text" id="nom" name="nom" required>
-          <div class="error">Merci d'indiquer votre nom.</div>
-        </div>
-      </div>
-
-      <div class="field" data-field="telephone">
-        <label for="telephone">Numéro de téléphone</label>
-        <input type="tel" id="telephone" name="telephone" placeholder="+229 00 00 00 00" required>
-        <div class="hint">Avec l'indicatif du pays. Il servira à vérifier votre compte par code envoyé par SMS.</div>
-        <div class="error">Merci d'entrer un numéro de téléphone valide, avec l'indicatif du pays.</div>
-      </div>
-
-      <div class="row">
-        <div class="field" data-field="pays">
-          <label for="pays">Pays</label>
-          <select id="pays" name="pays" required>
-            <option value="">Sélectionner…</option>
-            <option value="BJ">Bénin</option>
-            <option value="CI">Côte d'Ivoire</option>
-            <option value="SN">Sénégal</option>
-            <option value="NG">Nigeria</option>
-            <option value="GH">Ghana</option>
-            <option value="KE">Kenya</option>
-            <option value="CD">RD Congo</option>
-            <option value="ZA">Afrique du Sud</option>
-          </select>
-          <div class="error">Merci de choisir votre pays.</div>
-        </div>
-        <div class="field" data-field="devise">
-          <label for="devise">Devise de votre compte</label>
-          <select id="devise" name="devise" required>
-            <option value="">Sélectionner…</option>
-            <option value="XOF">Franc CFA (XOF)</option>
-            <option value="NGN">Naira (NGN)</option>
-            <option value="GHS">Cedi (GHS)</option>
-            <option value="KES">Shilling (KES)</option>
-            <option value="CDF">Franc congolais (CDF)</option>
-            <option value="ZAR">Rand (ZAR)</option>
-          </select>
-          <div class="error">Merci de choisir votre devise.</div>
-        </div>
-      </div>
-
+    <form id="login-form" novalidate>
       <div class="field" data-field="email">
         <label for="email">Adresse e-mail</label>
         <input type="email" id="email" name="email" required>
-        <div class="hint">Utilisée pour les notifications et la vérification du compte, jamais pour vos identifiants.</div>
         <div class="error">Merci d'entrer une adresse e-mail valide.</div>
       </div>
 
       <div class="field" data-field="pin">
         <label for="pin">Code PIN (4 chiffres)</label>
         <input type="password" id="pin" name="pin" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" required>
-        <div class="hint">Ce code vous servira à confirmer vos transferts.</div>
         <div class="error">Le code PIN doit contenir exactement 4 chiffres.</div>
       </div>
 
-      <button type="submit" class="btn-primary">Créer mon compte</button>
+      <div class="field-row">
+        <span></span>
+        <a href="#">Code oublié ?</a>
+      </div>
+
+      <button type="submit" class="btn-primary">Se connecter</button>
 
       <div class="demo-note">
-        Ceci est une page de démonstration du site vitrine : aucun compte n'est réellement créé et aucune donnée n'est envoyée.
+        Ceci est une page de démonstration du site vitrine : aucune connexion réelle n'est effectuée.
       </div>
     </form>
 
     <div class="confirm" id="confirm-panel">
-      <h2>Compte créé (démonstration)</h2>
+      <h2>Connexion réussie (démonstration)</h2>
       <p id="confirm-text"></p>
+    </div>
+
+    <div class="fine-print">
+      Pas encore de compte ? <a href="inscription.html">Créer un compte</a>
     </div>
   </div>
 </main>
 
 <script>
-  const form = document.getElementById('signup-form');
+  const form = document.getElementById('login-form');
   const confirmPanel = document.getElementById('confirm-panel');
   const confirmText = document.getElementById('confirm-text');
 
   function setInvalid(field, isInvalid){
     field.classList.toggle('invalid', isInvalid);
-  }
-
-  function validPhone(value){
-    return /^\+?[0-9\s]{8,15}$/.test(value.trim());
   }
   function validPin(value){
     return /^[0-9]{4}$/.test(value.trim());
@@ -274,11 +225,6 @@
     let ok = true;
 
     const checks = [
-      { id:'prenom', valid: v => v.trim().length > 0 },
-      { id:'nom', valid: v => v.trim().length > 0 },
-      { id:'telephone', valid: validPhone },
-      { id:'pays', valid: v => v !== '' },
-      { id:'devise', valid: v => v !== '' },
       { id:'email', valid: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) },
       { id:'pin', valid: validPin }
     ];
@@ -296,9 +242,8 @@
       return;
     }
 
-    const prenom = document.getElementById('prenom').value.trim();
-    const pays = document.getElementById('pays').selectedOptions[0].textContent;
-    confirmText.textContent = "Bienvenue " + prenom + ". Un code de vérification serait envoyé au numéro fourni, et votre compte serait associé à : " + pays + ".";
+    const email = document.getElementById('email').value.trim();
+    confirmText.textContent = "Bienvenue de retour. Vous seriez maintenant connecté avec le compte : " + email + ".";
     confirmPanel.classList.add('show');
     form.reset();
   });

@@ -64,6 +64,9 @@
   nav .links{display:flex; gap:28px; font-size:0.95rem;}
   nav .links a{text-decoration:none; color:var(--cream-dim);}
   nav .links a:hover{color:var(--cream);}
+  nav .auth-links{display:flex; gap:18px; align-items:center; font-size:0.95rem;}
+  nav .auth-links > a:not(.btn){text-decoration:none; color:var(--cream-dim);}
+  nav .auth-links > a:not(.btn):hover{color:var(--cream);}
 
   /* ---------- Hero ---------- */
   header.hero{
@@ -149,48 +152,6 @@
   .step h3{font-size:1.1rem; margin-top:10px; font-weight:500;}
   .step p{color:var(--cream-dim); font-size:0.94rem; margin-top:8px;}
 
-  /* ---------- Converter ---------- */
-  .converter{
-    margin-top:48px;
-    background:var(--bg-panel);
-    border:1px solid var(--line);
-    border-radius:6px;
-    padding:36px;
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:28px;
-  }
-  .field label{
-    display:block; font-size:0.82rem; color:var(--cream-dim); margin-bottom:8px;
-  }
-  .field input, .field select{
-    width:100%;
-    background:var(--bg);
-    border:1px solid var(--line);
-    color:var(--cream);
-    padding:12px 14px;
-    border-radius:3px;
-    font-family:'Space Grotesk', sans-serif;
-    font-size:1rem;
-  }
-  .field{margin-bottom:18px;}
-  .swap-row{
-    grid-column:1/-1;
-    display:flex; align-items:center; gap:14px; color:var(--cream-dim); font-size:0.85rem;
-  }
-  .swap-row hr{flex:1; border:none; border-top:1px solid var(--line);}
-  .result-panel{
-    display:flex; flex-direction:column; justify-content:center;
-    border-left:1px solid var(--line);
-    padding-left:28px;
-  }
-  .result-amount{
-    font-family:'Fraunces', serif;
-    font-size:2.4rem;
-    color:var(--gold);
-  }
-  .result-note{color:var(--cream-dim); font-size:0.82rem; margin-top:10px;}
-
   /* ---------- Coverage ---------- */
   .coverage-grid{
     margin-top:44px;
@@ -238,28 +199,128 @@
   @media (max-width: 860px){
     .hero .wrap{grid-template-columns:1fr;}
     .steps{grid-template-columns:1fr;}
-    .converter{grid-template-columns:1fr;}
-    .result-panel{border-left:none; border-top:1px solid var(--line); padding-left:0; padding-top:20px;}
     .coverage-grid{grid-template-columns:repeat(2,1fr);}
     .trust-list{grid-template-columns:1fr;}
     nav .links{display:none;}
+    nav .auth-links{gap:10px;}
+    nav .auth-links a:not(.btn){font-size:0.85rem;}
+    nav .auth-links .btn{padding:8px 14px !important; font-size:0.85rem;}
+    .logo{font-size:1.15rem;}
   }
   @media (prefers-reduced-motion: reduce){
     .route-pulse{animation:none !important;}
+    .orbit-path, .orbit-label{animation:none !important;}
+  }
+
+  /* ---------- Intro: AfriPay orbits the globe ---------- */
+  .intro-screen{
+    position:fixed; inset:0; z-index:9999;
+    background:var(--bg);
+    display:flex; align-items:center; justify-content:center;
+    transition:opacity 0.6s ease, visibility 0.6s ease;
+  }
+  .intro-screen.hide{ opacity:0; visibility:hidden; pointer-events:none; }
+  .globe-orbit-wrap{
+    position:relative;
+    width:240px; height:240px;
+  }
+  .globe{
+    position:absolute; top:50%; left:50%;
+    width:130px; height:130px;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    background:radial-gradient(circle at 34% 30%, #2c4a70, var(--bg-panel) 55%, #0a121e 100%);
+    box-shadow:0 0 46px rgba(227,162,60,0.22), inset -12px -12px 28px rgba(0,0,0,0.55);
+  }
+  .globe .meridian{
+    position:absolute; top:0; left:50%; width:100%; height:100%;
+    border:1px solid rgba(243,238,226,0.14);
+    border-radius:50%;
+  }
+  .globe .meridian.m1{transform:translateX(-50%) scaleX(0.86);}
+  .globe .meridian.m2{transform:translateX(-50%) scaleX(0.5);}
+  .globe .meridian.m3{transform:translateX(-50%) scaleX(0.15);}
+  .globe .equator{
+    position:absolute; top:50%; left:0; width:100%; height:1px;
+    background:rgba(243,238,226,0.14);
+  }
+  .orbit-ring{
+    position:absolute; top:50%; left:50%;
+    width:210px; height:210px;
+    transform:translate(-50%,-50%);
+    border:1px dashed rgba(227,162,60,0.22);
+    border-radius:50%;
+  }
+  .orbit-path{
+    position:absolute; top:50%; left:50%;
+    width:0; height:0;
+    animation:orbitSpin 3.2s linear 1;
+  }
+  @keyframes orbitSpin{
+    from{ transform:translate(-50%,-50%) rotate(0deg); }
+    to{ transform:translate(-50%,-50%) rotate(360deg); }
+  }
+  .orbit-label{
+    position:absolute;
+    top:-105px; left:0;
+    animation:counterSpin 3.2s linear 1;
+  }
+  @keyframes counterSpin{
+    from{ transform:translateX(-50%) rotate(0deg); }
+    to{ transform:translateX(-50%) rotate(-360deg); }
+  }
+  .orbit-label span{
+    display:block;
+    font-family:'Fraunces', serif;
+    font-size:1.1rem;
+    color:var(--gold);
+    letter-spacing:0.03em;
+    white-space:nowrap;
+    text-shadow:0 0 14px rgba(227,162,60,0.5);
+  }
+  .orbit-dot{
+    position:absolute; top:-4px; left:-4px;
+    width:8px; height:8px; border-radius:50%;
+    background:var(--coral);
+    box-shadow:0 0 10px rgba(226,87,43,0.8);
+  }
+  @media (max-width:480px){
+    .globe-orbit-wrap{width:190px; height:190px;}
+    .globe{width:104px; height:104px;}
+    .orbit-ring{width:168px; height:168px;}
+    .orbit-label{top:-84px;}
   }
 </style>
 </head>
 <body>
+
+<div class="intro-screen" id="intro-screen">
+  <div class="globe-orbit-wrap">
+    <div class="globe">
+      <div class="meridian m1"></div>
+      <div class="meridian m2"></div>
+      <div class="meridian m3"></div>
+      <div class="equator"></div>
+    </div>
+    <div class="orbit-ring"></div>
+    <div class="orbit-path">
+      <div class="orbit-label"><span>AfriPay</span></div>
+      <div class="orbit-dot"></div>
+    </div>
+  </div>
+</div>
 
 <nav>
   <div class="wrap">
     <div class="logo">Afri<span>Pay</span></div>
     <div class="links">
       <a href="#comment">Comment ça marche</a>
-      <a href="#simulateur">Simulateur</a>
       <a href="#pays">Pays couverts</a>
       <a href="#confiance">Sécurité</a>
-      <a href="inscription.html">S'inscrire</a>
+    </div>
+    <div class="auth-links">
+      <a href="connexion.html">Se connecter</a>
+      <a href="inscription.html" class="btn btn-primary" style="padding:9px 18px;">Créer un compte</a>
     </div>
   </div>
 </nav>
@@ -329,35 +390,6 @@
   </div>
 </section>
 
-<section id="simulateur">
-  <div class="wrap">
-    <h2>Simulateur de conversion</h2>
-    <p class="intro">À titre indicatif : ceci est une démonstration du site vitrine, pas un transfert réel.</p>
-    <div class="converter">
-      <div>
-        <div class="field">
-          <label for="amount">Montant à envoyer</label>
-          <input type="number" id="amount" value="50000" min="0" step="100">
-        </div>
-        <div class="field">
-          <label for="from">Devise de départ</label>
-          <select id="from"></select>
-        </div>
-        <div class="field">
-          <label for="to">Devise d'arrivée</label>
-          <select id="to"></select>
-        </div>
-      </div>
-      <div class="result-panel">
-        <div class="result-amount" id="result">—</div>
-        <div class="result-note" id="rate-note"></div>
-        <div class="result-note">Taux fictifs, fournis uniquement pour illustrer le fonctionnement du service.</div>
-      </div>
-      <div class="swap-row"><hr></div>
-    </div>
-  </div>
-</section>
-
 <section id="pays">
   <div class="wrap">
     <h2>Un réseau qui grandit à travers le continent</h2>
@@ -413,10 +445,10 @@
 
 <section class="closing">
   <div class="wrap">
-    <h2>Le site vitrine, première étape avant le service complet.</h2>
-    <p class="intro">Cette page présente le projet. L'envoi et la réception réels arriveront avec la prochaine phase.</p>
+    <h2>Prêt à envoyer votre premier transfert ?</h2>
+    <p class="intro">Créez votre compte en quelques minutes et commencez à envoyer de l'argent partout en Afrique.</p>
     <div class="cta-row">
-      <a href="#simulateur" class="btn btn-primary">Essayer le simulateur</a>
+      <a href="inscription.html" class="btn btn-primary">Créer un compte</a>
     </div>
   </div>
 </section>
@@ -429,61 +461,23 @@
 </footer>
 
 <script>
-  const rates = {
-    XOF: 1,
-    NGN: 0.95,
-    GHS: 0.0074,
-    KES: 0.021,
-    CDF: 4.6,
-    ZAR: 0.030,
-    EUR: 0.00152,
-    USD: 0.00164
-  };
-  const labels = {
-    XOF: "Franc CFA (XOF)",
-    NGN: "Naira (NGN)",
-    GHS: "Cedi ghanéen (GHS)",
-    KES: "Shilling kényan (KES)",
-    CDF: "Franc congolais (CDF)",
-    ZAR: "Rand sud-africain (ZAR)",
-    EUR: "Euro (EUR)",
-    USD: "Dollar (USD)"
-  };
+  (function(){
+    var intro = document.getElementById('intro-screen');
+    if(!intro) return;
 
-  const fromSel = document.getElementById('from');
-  const toSel = document.getElementById('to');
-  const amountInput = document.getElementById('amount');
-  const resultEl = document.getElementById('result');
-  const noteEl = document.getElementById('rate-note');
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.documentElement.style.overflow = 'hidden';
 
-  Object.keys(labels).forEach(code => {
-    const opt1 = document.createElement('option');
-    opt1.value = code; opt1.textContent = labels[code];
-    fromSel.appendChild(opt1);
-    const opt2 = document.createElement('option');
-    opt2.value = code; opt2.textContent = labels[code];
-    toSel.appendChild(opt2);
-  });
-  fromSel.value = "XOF";
-  toSel.value = "NGN";
+    function finishIntro(){
+      intro.classList.add('hide');
+      document.documentElement.style.overflow = '';
+      setTimeout(function(){
+        if(intro.parentNode){ intro.parentNode.removeChild(intro); }
+      }, 650);
+    }
 
-  function formatNumber(n){
-    return n.toLocaleString('fr-FR', {maximumFractionDigits: 2});
-  }
-
-  function updateResult(){
-    const amount = parseFloat(amountInput.value) || 0;
-    const from = fromSel.value;
-    const to = toSel.value;
-    const inXOF = amount / rates[from];
-    const converted = inXOF * rates[to];
-    resultEl.textContent = formatNumber(converted) + " " + to;
-    const unitRate = rates[to] / rates[from];
-    noteEl.textContent = "1 " + from + " ≈ " + unitRate.toLocaleString('fr-FR', {maximumFractionDigits: 4}) + " " + to;
-  }
-
-  [amountInput, fromSel, toSel].forEach(el => el.addEventListener('input', updateResult));
-  updateResult();
+    setTimeout(finishIntro, reduceMotion ? 300 : 3300);
+  })();
 </script>
 
 </body>
